@@ -1,0 +1,102 @@
+name: Praxisprojekt_03_Postgres_Datenbank
+services:
+  postgres:
+    image: docker.io/library/postgres:latest
+    container_name: postgres-db
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    command: >
+      postgres
+      -c log_connections=on
+      -c log_disconnections=on  
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql
+    networks:
+      - internal
+
+  # nocodb:
+  #   image: docker.io/nocodb/nocodb:latest
+  #   container_name: nocodb
+  #   environment: 
+  #     NC_ADMIN_EMAIL: ${NC_ADMIN_EMAIL}
+  #     NC_ADMIN_PASSWORD: ${NC_ADMIN_PASSWORD}
+  #   depends_on:
+  #     - postgres
+  #   ports:
+  #     - "8080:8080"
+  #   volumes:
+  #     - nocodb-data:/usr/app/data
+  #   networks:
+  #     - internal
+
+  # pgadmin:
+  #   image: docker.io/dpage/pgadmin4:latest
+  #   container_name: pgadmin
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+  #     PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+  #   ports:
+  #     - "8081:80"
+  #   depends_on:
+  #     - postgres
+  #   volumes:
+  #     - pgadmin-data:/var/lib/pgadmin
+  #   networks:
+  #     - internal
+
+  # metabase:
+  #   image: metabase/metabase:latest
+  #   container_name: metabase
+  #   hostname: metabase
+  #   volumes:
+  #     - metabase-data:/app/metabase.db
+  #   ports:
+  #     - 3000:3000
+  #   environment:
+  #     MB_DB_TYPE: ${MB_DB_TYPE}
+  #     MB_DB_DBNAME: ${MB_DB_DBNAME}
+  #     MB_DB_PORT: ${MB_DB_PORT}
+  #     MB_DB_USER: ${MB_DB_USER}
+  #     MB_DB_PASS: ${MB_DB_PASS}
+  #     MB_DB_HOST: ${MB_DB_HOST}
+  #   depends_on:
+  #     - postgres
+  #   networks:
+  #     - internal
+
+  # superset:
+  #   image: apache/superset:latest
+  #   container_name: superset
+  #   environment:
+  #     SUPERSET_SECRET_KEY: ${SUPERSET_SECRET_KEY}
+  #     SUPERSET_USER: ${SUPERSET_USER}
+  #     SUPERSET_PASS: ${SUPERSET_PASS}
+  #     SUPERSET_DB: ${SUPERSET_DB}
+  #     SUPERSET_ADMIN: ${SUPERSET_ADMIN}
+  #     SUPERSET_EMAIL: ${SUPERSET_EMAIL}
+  #     SUPERSET_PASSWORD: ${SUPERSET_PASSWORD}
+  #     SUPERSET_LOAD_EXAMPLES: "yes"
+  #     DATABASE_URL: postgresql+psycopg2://${SUPERSET_USER}:${SUPERSET_PASS}@postgres:5432/${SUPERSET_DB}
+  #   ports:
+  #     - "8088:8088"
+  #   depends_on:
+  #     - postgres
+  #   volumes:
+  #     - superset-home:/app/superset_home
+  #   networks:
+  #     - internal  
+
+volumes:
+  pgdata:
+  # nocodb-data:
+  # metabase-data:
+  # pgadmin-data:
+  # superset-home:
+
+networks:
+  internal:
+    driver: bridge
